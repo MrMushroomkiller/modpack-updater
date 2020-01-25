@@ -67,7 +67,7 @@ int main(void)
 							<< "    }," << endl
 							<< "    \"7492cfc59345268a57518353a3b46b80\" : {" << endl
 							<< "      \"created\" : \"2020-01-24T04:07:39.132Z\", " << endl
-							<< "      \"gameDir\" : \"C:\\\\Users\\\\" << username << "\\\\AppData\\\\Roaming\\\\.modpack\"," << endl
+							<< "      \"gameDir\" : \"C:\\\\Users\\\\" << username << "\\\\AppData\\\\Roaming\\\\.modpack\", " << endl
 							<< "      \"icon\" : \"Cake\", " << endl
 							<< "      \"javaArgs\" : \"-Xmx4G -XX:+UnlockExperimentalVMOptions -XX:+UseG1GC -XX:G1NewSizePercent=20 -XX:G1ReservePercent=20 -XX:MaxGCPauseMillis=50 -XX:G1HeapRegionSize=32M\"," << endl
 							<< "      \"lastUsed\" : \"2020-01-24T04:07:50.464Z\"," << endl

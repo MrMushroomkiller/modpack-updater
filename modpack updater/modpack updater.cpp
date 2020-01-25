@@ -7,10 +7,8 @@
 #include <sstream>
 #include <filesystem>
 #include <fstream>
-#include <locale> 
-#include <codecvt>
-#include <windows.h>
 #include <Lmcons.h>
+#include <direct.h>
 
 namespace fs = std::filesystem;
 
@@ -39,17 +37,15 @@ int main(void)
 	
 	//formatage du chemin
 	string mcdi = mcdir;
-	std::cout << mcdi.c_str() << endl;
 	mcdi += "\\.minecraft";
-	std::cout << mcdi.c_str() << endl;
 
 	//conversion de l'adresse en string
 	TCHAR* bob = mcdir;
 	string s_mcdir = bob;
 	
+	//ajout d'un profil
 	//moddifcation de prof.json
 	string prof = mcdi += "\\launcher_profiles.json";
-	std::cout << prof << endl;
 
 	string line;
 	ifstream myfile(prof);
@@ -58,35 +54,86 @@ int main(void)
 	{
 		while (getline(myfile, line))
 		{
-			o_prof << line << '\n';
 			if (line.find("\"profiles\" : {") == 2) {
-				o_prof << "    \"59efa1743311ab816385ef945539c77b\" : {" << endl
-					<< "	  \"created\" : \"2020-01-23T16:18:06.380Z\", " << endl
-					<< "	  \"gameDir\" : \"C:\\\\Users\\\\" << username <<"\\\\AppData\\\\Roaming\\\\.modpack" << endl
-					<< "      \"icon\" : \"Cake\", " << endl
-					<< "      \"javaArgs\" : \"-Xmx4G -XX:+UnlockExperimentalVMOptions -XX:+UseG1GC -XX:G1NewSizePercent=20 -XX:G1ReservePercent=20 -XX:MaxGCPauseMillis=50 -XX:G1HeapRegionSize=32M\"," << endl
-					<< "      \"lastUsed\" : \"2020-01-21T01:48:52.398Z\"," << endl
-					<< "      \"lastVersionId\" : \"1.12.2-forge1.12.2-14.23.5.2847\"," << endl
-					<< "      \"name\" : \"Le meilllllllleur serveur\"," << endl
-					<< "      \"type\" : \"custom\"" << endl
-					<< "	}," << endl;
+				bool f_da = 0;
+				o_prof << "  \"profiles\" : {" << endl;
+				while (getline(myfile, line)) {
+					if (line == "    \"7492cfc59345268a57518353a3b46b80\" : {") {
+						cout << "Profile deja ajoute\n";
+						f_da = 1;
+					}
+					if (line == "    }" and not f_da) {
+						o_prof
+							<< "    }," << endl
+							<< "    \"7492cfc59345268a57518353a3b46b80\" : {" << endl
+							<< "      \"created\" : \"2020-01-24T04:07:39.132Z\", " << endl
+							<< "      \"gameDir\" : \"C:\\\\Users\\\\" << username << "\\\\AppData\\\\Roaming\\\\.modpack\"," << endl
+							<< "      \"icon\" : \"Cake\", " << endl
+							<< "      \"javaArgs\" : \"-Xmx4G -XX:+UnlockExperimentalVMOptions -XX:+UseG1GC -XX:G1NewSizePercent=20 -XX:G1ReservePercent=20 -XX:MaxGCPauseMillis=50 -XX:G1HeapRegionSize=32M\"," << endl
+							<< "      \"lastUsed\" : \"2020-01-24T04:07:50.464Z\"," << endl
+							<< "      \"lastVersionId\" : \"1.12.2-forge1.12.2-14.23.5.2847\"," << endl
+							<< "      \"name\" : \"Le serveur qui est le meilleur\"," << endl
+							<< "      \"type\" : \"custom\"" << endl
+							<< "	}" << endl;
+						cout << "profile ajoute avec succes\n";
+					}
+					else o_prof << line << '\n';
+				}
 			}
+			else o_prof << line << '\n';
 		}
 		myfile.close();
-	}
-	else cout << "Unable to open file";
 
+	}
+	else cout << "Unable to open file\n";
+
+	//sauvegarde de launcher_profile.json
 	ofstream newprof;
 	newprof.open(prof.c_str());
-	if(newprof.is_open()) {
+	if (newprof.is_open()) {
 		newprof << o_prof.str();
 		newprof.close();
-		puts("File successfully created");
+		puts("profile modifie avec succes\n");
 	}
 	else
-		puts("Error creating file");
+		puts("Erreur lors de l'ecriture des profils");
 	
-	
+	//update/installation du modpack
+	string moddir = mcdir;
+	moddir += "\\.modpack";
+	cout << moddir << endl;
+	if (CreateDirectory(moddir.c_str(), NULL) ||
+		ERROR_ALREADY_EXISTS == GetLastError())
+	{
+		if (_chdir(moddir.c_str()) == 0) {
+			TCHAR NPath[MAX_PATH];
+			GetCurrentDirectory(MAX_PATH, NPath);
+			string git_p = string(NPath) + "\\.git";
+			struct stat info;
+
+			//test de l'existance de .git
+			if (stat(git_p.c_str(), &info) != 0) {
+				printf("cannot access %s\n", git_p.c_str());
+				system("git init");
+			}
+			else if (info.st_mode & S_IFDIR)
+				printf("%s is a directory\n", git_p.c_str());
+			else
+				printf("%s is no directory\n", git_p.c_str());
+
+			//update du modpack
+			system("git clean -d -f");
+			system("git pull https://github.com/MrMushroomkiller/le-meiuleur-serheuer.git");
+			system("git restore .");
+			system("pause");
+		}
+	}
+	else
+	{
+		cout << "Failed to create directory\n";
+	}
+
+
 
 	return 0;
 }

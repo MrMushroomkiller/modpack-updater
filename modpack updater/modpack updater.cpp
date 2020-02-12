@@ -10,7 +10,6 @@
 #include <Lmcons.h>
 #include <direct.h>
 
-namespace fs = std::filesystem;
 
 using namespace std;
 
@@ -125,14 +124,24 @@ int main(void)
 			HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
 
 			//update du modpack
-			system("git commit -m sup ");
+			system("git add config");
+			system("git add mods");
+			system("git add resourcepacks");
+			system("git add resource");
+			system("git add servers.dat");
+			system("git -c user.name='normie' -c user.email='my@email.org' commit -m '...'");
+			/*printf("config\n");
+			string conf = moddir + "\\config";
+			printf(conf.c_str());
+			filesystem::remove_all(conf);*/
+
 			SetConsoleTextAttribute(hConsole, 10);
-			printf("----------------------anakin stop panikin everything's chill----------------------\n");
+			printf("-------------------------------------anakin stop panikin everything's chill-------------------------------------\n");
+			SetConsoleTextAttribute(hConsole, 14);
+			printf("Sauf si ça dit: error: The following untracked working tree files would be overwritten by merge:\nDans ce cas il faut aller supprimer les fichiers dont il parle\n");
 			SetConsoleTextAttribute(hConsole, 15);
 			printf("pull\n");
 			system("git pull https://github.com/MrMushroomkiller/le-meiuleur-serheuer.git");
-			/*printf("merge\n");
-			system("git merge");*/
 			printf("restore\n");
 			system("git restore .");
 			system("pause");

@@ -113,17 +113,27 @@ int main(void)
 
 			//test de l'existance de .git
 			if (stat(git_p.c_str(), &info) != 0) {
-				printf("cannot access %s\n", git_p.c_str());
+				printf(".git existe po\n");
 				system("git init");
 			}
-			else if (info.st_mode & S_IFDIR)
-				printf("%s is a directory\n", git_p.c_str());
+			else if (info.st_mode & S_IFDIR) {
+				printf(".git existe\n");
+			}
 			else
-				printf("%s is no directory\n", git_p.c_str());
+				printf(".git est po un dossier\n");
+
+			HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
 
 			//update du modpack
-			//system("git clean -d -f");
+			system("git commit -m sup ");
+			SetConsoleTextAttribute(hConsole, 10);
+			printf("----------------------anakin stop panikin everything's chill----------------------\n");
+			SetConsoleTextAttribute(hConsole, 15);
+			printf("pull\n");
 			system("git pull https://github.com/MrMushroomkiller/le-meiuleur-serheuer.git");
+			/*printf("merge\n");
+			system("git merge");*/
+			printf("restore\n");
 			system("git restore .");
 			system("pause");
 		}
@@ -137,18 +147,6 @@ int main(void)
 
 	return 0;
 }
-
-// Run program: Ctrl + F5 or Debug > Start Without Debugging menu
-// Debug program: F5 or Debug > Start Debugging menu
-
-// Tips for Getting Started: 
-//   1. Use the Solution Explorer window to add/manage files
-//   2. Use the Team Explorer window to connect to source control
-//   3. Use the Output window to see build output and other messages
-//   4. Use the Error List window to view errors
-//   5. Go to Project > Add New Item to create new code files, or Project > Add Existing Item to add existing code files to the project
-//   6. In the future, to open this project again, go to File > Open > Project and select the .sln file
-
 
 /*
 "59efa1743311ab816385ef945539c77b" : {

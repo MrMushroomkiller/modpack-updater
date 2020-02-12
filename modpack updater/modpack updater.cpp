@@ -122,7 +122,7 @@ int main(void)
 				printf("%s is no directory\n", git_p.c_str());
 
 			//update du modpack
-			system("git clean -d -f");
+			//system("git clean -d -f");
 			system("git pull https://github.com/MrMushroomkiller/le-meiuleur-serheuer.git");
 			system("git restore .");
 			system("pause");

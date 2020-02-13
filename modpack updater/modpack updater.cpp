@@ -9,10 +9,12 @@
 #include <fstream>
 #include <Lmcons.h>
 #include <direct.h>
+#include <windows.h>
 
 
 using namespace std;
 
+VOID startup(LPCTSTR lpApplicationName);
 
 int main(void)
 {
@@ -144,7 +146,6 @@ int main(void)
 			system("git pull https://github.com/MrMushroomkiller/le-meiuleur-serheuer.git");
 			printf("restore\n");
 			system("git restore .");
-			system("pause");
 		}
 	}
 	else
@@ -153,19 +154,51 @@ int main(void)
 	}
 
 
+	ifstream mcexe("C:\\Program Files (x86)\\Minecraft Launcher\\MinecraftLauncher.exe");
+	if (mcexe.is_open())
+	{
+		startup("C:\\Program Files (x86)\\Minecraft Launcher\\MinecraftLauncher.exe");
+		mcexe.close();
+	}
+	else {
+		HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
+		SetConsoleTextAttribute(hConsole, 12);
+		printf("Mais ou t'a mis ton minecraft launcher mon petit connard\n");
+		SetConsoleTextAttribute(hConsole, 14);
+		printf("en theorie il devrait etre dans C:\\Program Files (x86)\\Minecraft Launcher, mais mon programme ne le trouve pas\n");
+		SetConsoleTextAttribute(hConsole, 15);
+	}
 
+	system("pause");
 	return 0;
 }
 
-/*
-"59efa1743311ab816385ef945539c77b" : {
-	  "created" : "2020-01-23T16:18:06.380Z",
-	  "gameDir" : "C:\\Users\\mimas\\AppData\\Roaming\\le_meilleur_serveur",
-	  "icon" : "Cake",
-	  "javaArgs" : "-Xmx4G -XX:+UnlockExperimentalVMOptions -XX:+UseG1GC -XX:G1NewSizePercent=20 -XX:G1ReservePercent=20 -XX:MaxGCPauseMillis=50 -XX:G1HeapRegionSize=32M",
-	  "lastUsed" : "2020-01-21T01:48:52.398Z",
-	  "lastVersionId" : "1.12.2-forge1.12.2-14.23.5.2847",
-	  "name" : "Le meilllllllleur serv\u00e9",
-	  "type" : "custom"
-	},
-*/
+
+
+VOID startup(LPCTSTR lpApplicationName)
+{
+	// additional information
+	STARTUPINFO si;
+	PROCESS_INFORMATION pi;
+
+	// set the size of the structures
+	ZeroMemory(&si, sizeof(si));
+	si.cb = sizeof(si);
+	ZeroMemory(&pi, sizeof(pi));
+
+	// start the program up
+	CreateProcess(lpApplicationName,   // the path
+		NULL,        // Command line
+		NULL,           // Process handle not inheritable
+		NULL,           // Thread handle not inheritable
+		FALSE,          // Set handle inheritance to FALSE
+		0,              // No creation flags
+		NULL,           // Use parent's environment block
+		NULL,           // Use parent's starting directory 
+		&si,            // Pointer to STARTUPINFO structure
+		&pi             // Pointer to PROCESS_INFORMATION structure (removed extra parentheses)
+	);
+	// Close process and thread handles. 
+	CloseHandle(pi.hProcess);
+	CloseHandle(pi.hThread);
+}
